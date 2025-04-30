@@ -1,0 +1,47 @@
+{
+  "CO": {
+    "vs_BU": {
+      "AA": { "action": "R" }, "AKs": { "action": "R" }, "AQs": { "action": "R" }, "AJs": { "action": "C" }, "ATs": { "action": "C" }, "A9s": { "action": "C" }, "A8s": { "action": "C" }, "A7s": { "action": "C" }, "A6s": { "action": "C" }, "A5s": { "action": "C" }, "A4s": { "action": "C" }, "A3s": { "action": "R" }, "A2s": { "action": "C" },
+      "AKo": { "action": "R" }, "KK": { "action": "R" }, "KQs": { "action": "C" }, "KJs": { "action": "C" }, "KTs": { "action": "C" }, "K9s": { "action": "C" }, "K8s": { "action": "C" }, "K7s": { "action": "C" }, "K6s": { "action": "C" }, "K5s": { "action": "R" }, "K4s": { "action": "R" }, "K3s": { "action": "F" }, "K2s": { "action": "F" },
+      "AQo": { "action": "C" }, "KQo": { "action": "C" }, "QQ": { "action": "R" }, "QJs": { "action": "C" }, "QTs": { "action": "C" }, "Q9s": { "action": "C" }, "Q8s": { "action": "R" }, "Q7s": { "action": "R" }, "Q6s": { "action": "R" }, "Q5s": { "action": "F" }, "Q4s": { "action": "F" }, "Q3s": { "action": "F" }, "Q2s": { "action": "F" },
+      "AJo": { "action": "C" }, "KJo": { "action": "C" }, "QJo": { "action": "C" }, "JJ": { "action": "R" }, "JTs": { "action": "C" }, "J9s": { "action": "C" }, "J8s": { "action": "C" }, "J7s": { "action": "R" }, "J6s": { "action": "F" }, "J5s": { "action": "F" }, "J4s": { "action": "F" }, "J3s": { "action": "F" }, "J2s": { "action": "F" },
+      "ATo": { "action": "C" }, "KTo": { "action": "C" }, "QTo": { "action": "C" }, "JTo": { "action": "C" }, "TT": { "action": "R" }, "T9s": { "action": "C" }, "T8s": { "action": "C" }, "T7s": { "action": "C" }, "T6s": { "action": "F" }, "T5s": { "action": "F" }, "T4s": { "action": "F" }, "T3s": { "action": "F" }, "T2s": { "action": "F" },
+      "A9o": { "action": "R" }, "K9o": { "action": "F" }, "Q9o": { "action": "F" }, "J9o": { "action": "F" }, "T9o": { "action": "F" }, "99": { "action": "C" }, "98s": { "action": "C" }, "97s": { "action": "C" }, "96s": { "action": "F" }, "95s": { "action": "F" }, "94s": { "action": "F" }, "93s": { "action": "F" }, "92s": { "action": "F" },
+      "A8o": { "action": "R" }, "K8o": { "action": "F" }, "Q8o": { "action": "F" }, "J8o": { "action": "F" }, "T8o": { "action": "F" }, "98o": { "action": "F" }, "88": { "action": "C" }, "87s": { "action": "C" }, "86s": { "action": "C" }, "85s": { "action": "F" }, "84s": { "action": "F" }, "83s": { "action": "F" }, "82s": { "action": "F" },
+      "A7o": { "action": "F" }, "K7o": { "action": "F" }, "Q7o": { "action": "F" }, "J7o": { "action": "F" }, "T7o": { "action": "F" }, "97o": { "action": "F" }, "87o": { "action": "F" }, "77": { "action": "R" }, "76s": { "action": "C" }, "75s": { "action": "F" }, "74s": { "action": "F" }, "73s": { "action": "F" }, "72s": { "action": "F" },
+      "A6o": { "action": "F" }, "K6o": { "action": "F" }, "Q6o": { "action": "F" }, "J6o": { "action": "F" }, "T6o": { "action": "F" }, "96o": { "action": "F" }, "86o": { "action": "F" }, "76o": { "action": "F" }, "66": { "action": "C" }, "65s": { "action": "C" }, "64s": { "action": "F" }, "63s": { "action": "F" }, "62s": { "action": "F" },
+      "A5o": { "action": "F" }, "K5o": { "action": "F" }, "Q5o": { "action": "F" }, "J5o": { "action": "F" }, "T5o": { "action": "F" }, "95o": { "action": "F" }, "85o": { "action": "F" }, "75o": { "action": "F" }, "65o": { "action": "F" }, "55": { "action": "C" }, "54s": { "action": "C" }, "53s": { "action": "F" }, "52s": { "action": "F" },
+      "A4o": { "action": "F" }, "K4o": { "action": "F" }, "Q4o": { "action": "F" }, "J4o": { "action": "F" }, "T4o": { "action": "F" }, "94o": { "action": "F" }, "84o": { "action": "F" }, "74o": { "action": "F" }, "64o": { "action": "F" }, "54o": { "action": "F" }, "44": { "action": "C" }, "43s": { "action": "F" }, "42s": { "action": "F" },
+      "A3o": { "action": "F" }, "K3o": { "action": "F" }, "Q3o": { "action": "F" }, "J3o": { "action": "F" }, "T3o": { "action": "F" }, "93o": { "action": "F" }, "83o": { "action": "F" }, "73o": { "action": "F" }, "63o": { "action": "F" }, "53o": { "action": "F" }, "43o": { "action": "F" }, "33": { "action": "C" }, "32s": { "action": "F" },
+      "A2o": { "action": "F" }, "K2o": { "action": "F" }, "Q2o": { "action": "F" }, "J2o": { "action": "F" }, "T2o": { "action": "F" }, "92o": { "action": "F" }, "82o": { "action": "F" }, "72o": { "action": "F" }, "62o": { "action": "F" }, "52o": { "action": "F" }, "42o": { "action": "F" }, "32o": { "action": "F" }, "22": { "action": "C" }
+    },
+    "vs_SB": {
+      "AA": { "action": "R" }, "KK": { "action": "R" },
+      "T9s": { "action": "C" },
+      "87s": { "action": "F" }
+    },
+    "vs_BB": {
+       "AA": { "action": "R" }, "KK": { "action": "R" },
+       "T9s": { "action": "C" },
+       "87s": { "action": "C" }
+    }
+  },
+  "BU": {
+     "vs_CO": {
+      "AA": { "action": "R" }, "AKs": { "action": "R" }, "AQs": { "action": "R" }, "AJs": { "action": "R" }, "ATs": { "action": "R" }, "A9s": { "action": "C" }, "A8s": { "action": "C" }, "A7s": { "action": "F" }, "A6s": { "action": "F" }, "A5s": { "action": "R" }, "A4s": { "action": "R" }, "A3s": { "action": "F" }, "A2s": { "action": "F" },
+      "AKo": { "action": "R" }, "KK": { "action": "R" }, "KQs": { "action": "C" }, "KJs": { "action": "C" }, "KTs": { "action": "C" }, "K9s": { "action": "C" }, "K8s": { "action": "F" }, "K7s": { "action": "F" }, "K6s": { "action": "F" }, "K5s": { "action": "F" }, "K4s": { "action": "F" }, "K3s": { "action": "F" }, "K2s": { "action": "F" },
+      "AQo": { "action": "C" }, "KQo": { "action": "C" }, "QQ": { "action": "R" }, "QJs": { "action": "C" }, "QTs": { "action": "C" }, "Q9s": { "action": "C" }, "Q8s": { "action": "F" }, "Q7s": { "action": "F" }, "Q6s": { "action": "F" }, "Q5s": { "action": "F" }, "Q4s": { "action": "F" }, "Q3s": { "action": "F" }, "Q2s": { "action": "F" },
+      "AJo": { "action": "F" }, "KJo": { "action": "C" }, "QJo": { "action": "C" }, "JJ": { "action": "R" }, "JTs": { "action": "C" }, "J9s": { "action": "C" }, "J8s": { "action": "F" }, "J7s": { "action": "F" }, "J6s": { "action": "F" }, "J5s": { "action": "F" }, "J4s": { "action": "F" }, "J3s": { "action": "F" }, "J2s": { "action": "F" },
+      "ATo": { "action": "F" }, "KTo": { "action": "F" }, "QTo": { "action": "C" }, "JTo": { "action": "C" }, "TT": { "action": "R" }, "T9s": { "action": "C" }, "T8s": { "action": "C" }, "T7s": { "action": "F" }, "T6s": { "action": "F" }, "T5s": { "action": "F" }, "T4s": { "action": "F" }, "T3s": { "action": "F" }, "T2s": { "action": "F" },
+      "A9o": { "action": "F" }, "K9o": { "action": "F" }, "Q9o": { "action": "F" }, "J9o": { "action": "F" }, "T9o": { "action": "F" }, "99": { "action": "C" }, "98s": { "action": "C" }, "97s": { "action": "F" }, "96s": { "action": "F" }, "95s": { "action": "F" }, "94s": { "action": "F" }, "93s": { "action": "F" }, "92s": { "action": "F" },
+      "A8o": { "action": "F" }, "K8o": { "action": "F" }, "Q8o": { "action": "F" }, "J8o": { "action": "F" }, "T8o": { "action": "F" }, "98o": { "action": "F" }, "88": { "action": "C" }, "87s": { "action": "C" }, "86s": { "action": "F" }, "85s": { "action": "F" }, "84s": { "action": "F" }, "83s": { "action": "F" }, "82s": { "action": "F" },
+      "A7o": { "action": "F" }, "K7o": { "action": "F" }, "Q7o": { "action": "F" }, "J7o": { "action": "F" }, "T7o": { "action": "F" }, "97o": { "action": "F" }, "87o": { "action": "F" }, "77": { "action": "R" }, "76s": { "action": "C" }, "75s": { "action": "F" }, "74s": { "action": "F" }, "73s": { "action": "F" }, "72s": { "action": "F" },
+      "A6o": { "action": "F" }, "K6o": { "action": "F" }, "Q6o": { "action": "F" }, "J6o": { "action": "F" }, "T6o": { "action": "F" }, "96o": { "action": "F" }, "86o": { "action": "F" }, "76o": { "action": "F" }, "66": { "action": "C" }, "65s": { "action": "C" }, "64s": { "action": "F" }, "63s": { "action": "F" }, "62s": { "action": "F" },
+      "A5o": { "action": "F" }, "K5o": { "action": "F" }, "Q5o": { "action": "F" }, "J5o": { "action": "F" }, "T5o": { "action": "F" }, "95o": { "action": "F" }, "85o": { "action": "F" }, "75o": { "action": "F" }, "65o": { "action": "F" }, "55": { "action": "C" }, "54s": { "action": "C" }, "53s": { "action": "F" }, "52s": { "action": "F" },
+      "A4o": { "action": "F" }, "K4o": { "action": "F" }, "Q4o": { "action": "F" }, "J4o": { "action": "F" }, "T4o": { "action": "F" }, "94o": { "action": "F" }, "84o": { "action": "F" }, "74o": { "action": "F" }, "64o": { "action": "F" }, "54o": { "action": "F" }, "44": { "action": "C" }, "43s": { "action": "F" }, "42s": { "action": "F" },
+      "A3o": { "action": "F" }, "K3o": { "action": "F" }, "Q3o": { "action": "F" }, "J3o": { "action": "F" }, "T3o": { "action": "F" }, "93o": { "action": "F" }, "83o": { "action": "F" }, "73o": { "action": "F" }, "63o": { "action": "F" }, "53o": { "action": "F" }, "43o": { "action": "F" }, "33": { "action": "C" }, "32s": { "action": "F" },
+      "A2o": { "action": "F" }, "K2o": { "action": "F" }, "Q2o": { "action": "F" }, "J2o": { "action": "F" }, "T2o": { "action": "F" }, "92o": { "action": "F" }, "82o": { "action": "F" }, "72o": { "action": "F" }, "62o": { "action": "F" }, "52o": { "action": "F" }, "42o": { "action": "F" }, "32o": { "action": "F" }, "22": { "action": "C" }
+      },
+     "vs_BB": { }
+  }
+}
