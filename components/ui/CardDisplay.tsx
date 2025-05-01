@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image'; // Import next/image
 import { getCardImagePath } from '@/lib/pokerUtils';
 
 interface CardDisplayProps {
@@ -6,25 +7,59 @@ interface CardDisplayProps {
 }
 
 const CardDisplay: React.FC<CardDisplayProps> = ({ cards }) => {
+  // Define card dimensions (adjust as needed)
+  const cardWidth = 70; // Example width in pixels
+  const cardHeight = 100; // Example height based on typical card aspect ratio
+
   if (!cards) {
-    return <div className="text-white text-lg font-semibold">Waiting for hand...</div>;
+    // Display placeholders or card backs while loading/waiting
+    return (
+        <div className="flex space-x-1">
+           {/* Use placeholder or card back image */}
+           <Image
+                src='/images/cards/back.png'
+                alt="Card Back"
+                width={cardWidth}
+                height={cardHeight}
+                className="rounded shadow-md bg-white"
+                unoptimized // Use if images are static and don't need optimization
+            />
+           <Image
+                src='/images/cards/back.png'
+                alt="Card Back"
+                width={cardWidth}
+                height={cardHeight}
+                className="rounded shadow-md bg-white"
+                unoptimized
+            />
+        </div>
+    );
   }
 
   const [card1, card2] = cards;
   const imgPath1 = getCardImagePath(card1);
   const imgPath2 = getCardImagePath(card2);
 
-  // Basic display - use actual images and better styling
   return (
     <div className="flex space-x-1">
-       {/* Use img tags for actual card images */}
-       {/* Ensure you have card images in public/images/cards/ */}
-       <img src={imgPath1} alt={card1} className="h-20 w-auto md:h-28 rounded shadow-md bg-white" onError={(e) => (e.currentTarget.src = '/images/cards/back.png')} />
-       <img src={imgPath2} alt={card2} className="h-20 w-auto md:h-28 rounded shadow-md bg-white" onError={(e) => (e.currentTarget.src = '/images/cards/back.png')} />
-
-       {/* Fallback text display */}
-       {/* <div className="w-16 h-24 bg-white rounded border border-gray-400 flex items-center justify-center text-black text-2xl font-bold shadow-lg">{card1}</div>
-           <div className="w-16 h-24 bg-white rounded border border-gray-400 flex items-center justify-center text-black text-2xl font-bold shadow-lg">{card2}</div> */}
+       {/* Use next/image component */}
+       <Image
+            src={imgPath1}
+            alt={card1}
+            width={cardWidth}
+            height={cardHeight}
+            className="rounded shadow-md bg-white"
+            unoptimized // Assuming local images don't need Next.js optimization
+            // Add priority if this is likely to be LCP
+       />
+       <Image
+            src={imgPath2}
+            alt={card2}
+            width={cardWidth}
+            height={cardHeight}
+            className="rounded shadow-md bg-white"
+            unoptimized
+       />
     </div>
   );
 };
