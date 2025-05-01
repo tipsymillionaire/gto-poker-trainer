@@ -1,7 +1,7 @@
 import React from 'react';
 // Removed unused Image import: import Image from 'next/image';
 // Assuming these constants and components are correctly defined/imported
-import { Position, POSITIONS_8MAX, OPEN_RAISE_SIZE_BB } from '@/lib/constants'; // Keep POSITIONS_8MAX for seatCoordinates lookup if needed, or ensure positions prop covers all possibilities
+import { Position, OPEN_RAISE_SIZE_BB } from '@/lib/constants'; // Keep POSITIONS_8MAX for seatCoordinates lookup if needed, or ensure positions prop covers all possibilities
 import CardDisplay from './CardDisplay'; // Ensure CardDisplay uses colored backgrounds/white text
 
 interface PokerTableProps {
