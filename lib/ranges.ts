@@ -64,18 +64,22 @@ export function getGtoRange(openerPos: Position, defenderPos: Position, stack: n
  */
 export function getSimplifiedGtoAction(openerPos: Position, defenderPos: Position, stack: number, hand: string): Action | null {
     const range = getGtoRange(openerPos, defenderPos, stack);
-    if (!range || !range[hand]) {
-        // Handle hands potentially missing (e.g., if range isn't 100% complete)
-        // Defaulting to FOLD might be reasonable for unknown hands in many spots.
-        console.warn(`Hand ${hand} not found in range for ${defenderPos} vs ${openerPos} @ ${stack}bb. Defaulting to FOLD.`);
-        // Find the actual hand action detail
-        const handActionDetail = range ? range[hand] : null;
-        if (!handActionDetail) return 'FOLD'; // Default if hand truly missing
-        // If hand exists but action code is unexpected:
-        // return null; // Or handle error
+
+    // *** Check if range is null before accessing it ***
+    if (!range) {
+         console.warn(`Range not found for ${defenderPos} vs ${openerPos} @ ${stack}bb. Cannot determine action for ${hand}. Returning null.`);
+         // Return null or a default action like 'FOLD' if appropriate for your logic
+         return null; // Returning null indicates action couldn't be determined
+         // return 'FOLD'; // Alternative: Default to Fold if range is missing
     }
 
-     const handActionDetail = range[hand];
+    const handActionDetail = range[hand]; // Now safe to access
+
+    if (!handActionDetail) {
+        // Handle hands potentially missing within an existing range
+        console.warn(`Hand ${hand} not found in range for ${defenderPos} vs ${openerPos} @ ${stack}bb. Defaulting to FOLD.`);
+        return 'FOLD'; // Default if hand truly missing from the range data
+    }
 
 
     // Map data action codes ('R', 'C', 'F') to our Action type
