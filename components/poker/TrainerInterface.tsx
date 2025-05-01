@@ -5,7 +5,7 @@ import { POSITIONS_8MAX, STACK_SIZES, Action, Position } from '@/lib/constants';
 import { getSimplifiedGtoAction, getGtoRange, PositionRangeData } from '@/lib/ranges';
 import { generateTwoRandomCards, formatHandForRangeLookup } from '@/lib/pokerUtils';
 import PokerTable from '../ui/PokerTable';
-import CardDisplay from '../ui/CardDisplay';
+// import CardDisplay from './CardDisplay'; // No longer needed here
 import ActionButtons from '../ui/ActionButtons';
 import RangeGrid from '../ui/RangeGrid';
 import SelectDropdown from '../ui/SelectDropdown';
@@ -30,46 +30,52 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
     const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state for initial hand
 
     // --- Position Filtering ---
-    // Filter available opener positions (cannot be BB)
     const availableOpenerPositions = POSITIONS_8MAX.filter(p => p !== 'BB');
-
-    // Filter available user positions based on opener
-    // Use useMemo to avoid recalculating on every render unless openerPos changes
     const availableUserPositions = useMemo(() => {
+        // **Important**: With a fixed layout, the user can technically be in any position
+        // relative to the opener. The filtering logic might need adjustment depending
+        // on the specific scenarios you want to train (e.g., only allow positions after the opener).
+        // For now, allow any position except the opener itself.
+        return POSITIONS_8MAX.filter(p => p !== openerPos);
+        /* // Original logic (only positions after opener or blinds):
         return POSITIONS_8MAX.filter(p => {
             const openerIndex = POSITIONS_8MAX.indexOf(openerPos);
             const userIndex = POSITIONS_8MAX.indexOf(p);
             const isAfterOpener = (userIndex > openerIndex);
-            // Removed unused variables: isBlindDefending, isBbVsSb
-
-            // More accurate filtering:
-            if (p === openerPos) return false; // Cannot be the opener
-            if (openerPos === 'SB') return p === 'BB'; // Only BB can defend vs SB open
-            // If opener is not SB, then positions after opener + SB + BB are valid defenders
+            if (p === openerPos) return false;
+            if (openerPos === 'SB') return p === 'BB';
             return isAfterOpener || p === 'SB' || p === 'BB';
         });
-    }, [openerPos]); // Dependency: only recalculate when openerPos changes
+        */
+    }, [openerPos]);
 
     // --- Hand Generation and Scenario Update ---
     const setupNewScenario = useCallback(() => {
-        setIsLoading(true); // Start loading
-        setFeedback(null); // Clear previous feedback immediately
+        setIsLoading(true);
+        setFeedback(null);
         setShowRange(false);
         setCorrectRange(null);
-        setIsActionMade(false); // Re-enable buttons
+        setIsActionMade(false);
 
-        // Generate cards and format hand key
+        // Ensure userPos is valid for the selected openerPos based on filtering logic
+        // This might need adjustment if the filtering logic changes significantly
+        const validUserPositions = POSITIONS_8MAX.filter(p => p !== openerPos);
+        let currentValidUserPos = userPos;
+        if (!validUserPositions.includes(userPos)) {
+            currentValidUserPos = validUserPositions.length > 0 ? validUserPositions[0] : 'BB'; // Fallback
+            setUserPos(currentValidUserPos); // Update state if needed
+        }
+
+
         const cards = generateTwoRandomCards();
         const handKey = formatHandForRangeLookup(cards[0], cards[1]);
+        // Use the potentially updated userPos for fetching the action
+        const action = getSimplifiedGtoAction(openerPos, currentValidUserPos, stackSize, handKey);
 
-        // Pre-calculate correct action for the new hand/scenario
-        const action = getSimplifiedGtoAction(openerPos, userPos, stackSize, handKey);
-
-        // Update state after calculations
         setCurrentCards(cards);
         setCurrentHandKey(handKey);
-        setCorrectActionState(action); // Set the correct action in state
-        setIsLoading(false); // End loading
+        setCorrectActionState(action);
+        setIsLoading(false);
 
     }, [openerPos, userPos, stackSize]); // Dependencies
 
@@ -78,31 +84,28 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
         setupNewScenario();
     }, [setupNewScenario]); // Run once on mount and when relevant state changes
 
-    // Reset user position if it becomes invalid when opener changes
+    // Reset user position if it becomes invalid when opener changes (using updated logic)
     useEffect(() => {
-        // If the current userPos is no longer in the list of valid defenders for the new opener,
-        // select the first available valid defender position.
-        if (!availableUserPositions.includes(userPos)) {
-            const defaultPos = availableUserPositions.length > 0 ? availableUserPositions[0] : 'BB'; // Default to BB if list empty somehow
+        const validUserPositions = POSITIONS_8MAX.filter(p => p !== openerPos);
+        if (!validUserPositions.includes(userPos)) {
+            const defaultPos = validUserPositions.length > 0 ? validUserPositions[0] : 'BB'; // Simple fallback
              setUserPos(defaultPos);
-             // Note: setupNewScenario will run again due to userPos change in the next render cycle
         }
-    }, [openerPos, availableUserPositions, userPos]); // Dependencies are correct now
+    }, [openerPos, userPos]); // Removed availableUserPositions dependency as it's recalculated inline
 
 
     // --- Action Handling ---
     const handleAction = (chosenAction: Action) => {
-        // Use the correctActionState directly
         if (isLoading || !currentHandKey || isActionMade) return;
 
-        setIsActionMade(true); // Disable buttons
+        setIsActionMade(true);
 
         if (correctActionState === null) {
-             // Handle case where range/action wasn't found initially
+             // Ensure feedback uses the current userPos state value
              setFeedback(`❓ Range data not found for ${currentHandKey} in ${userPos} vs ${openerPos}. Cannot determine correct action.`);
              setShowRange(false);
              setCorrectRange(null);
-             return; // Exit early
+             return;
         }
 
         if (chosenAction === correctActionState) {
@@ -110,7 +113,6 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
             setShowRange(false);
         } else {
             setFeedback(`❌ Incorrect. You chose ${chosenAction}. GTO play with ${currentHandKey} is ${correctActionState}.`);
-            // Fetch and set the correct range only on incorrect answers where data exists
             const range = getGtoRange(openerPos, userPos, stackSize);
             setCorrectRange(range);
             setShowRange(true);
@@ -119,7 +121,7 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
 
     // --- Render ---
     return (
-        <div className="w-full max-w-5xl p-4 sm:p-6 bg-gray-100 rounded-lg shadow-xl border border-gray-200">
+        <div className="w-full max-w-5xl p-4 sm:p-6  rounded-lg shadow-xl border border-gray-200">
             {/* Settings Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 pb-4 border-b border-gray-300">
                 <SelectDropdown
@@ -140,33 +142,34 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
                     label="Your Position (Hero)"
                     value={userPos}
                     onChange={(e) => setUserPos(e.target.value as Position)}
-                    // Ensure dropdown only shows valid defending positions for the current opener
-                    options={availableUserPositions.map(p => ({ value: p, label: p }))}
+                    // Update options based on the potentially simplified filtering logic
+                    options={POSITIONS_8MAX.filter(p => p !== openerPos).map(p => ({ value: p, label: p }))}
                     id="user-pos-select"
                 />
             </div>
 
-            {/* Display Area: Table and Cards */}
-            {/* Increased min-height to better accommodate table layout */}
-            <div className="mb-6 relative min-h-[350px] md:min-h-[450px] flex flex-col items-center justify-start pt-4">
-                 {/* Poker Table - Takes up space */}
+            {/* Display Area: Table now handles cards */}
+            {/* Adjusted min-height slightly */}
+            <div className="mb-6 relative min-h-[350px] md:min-h-[450px] flex flex-col items-center justify-start pt-4"> {/* Increased min-height */}
+                 {/* Poker Table - Renders seats AND cards */}
                 <div className="w-full mb-4">
                     <PokerTable
-                        positions={POSITIONS_8MAX} // Pass the standard order
+                        positions={POSITIONS_8MAX}
                         openerPos={openerPos}
-                        userPos={userPos} // Pass the actual selected hero position
+                        userPos={userPos}
                         stackSize={stackSize}
+                        heroCards={currentCards} // Pass cards to table
+                        isLoading={isLoading} // Pass loading state
                     />
                 </div>
 
-                {/* Cards - Positioned absolutely in the center of the parent container */}
-                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 h-20 md:h-28 flex items-center justify-center">
-                    {isLoading ? (
-                         <div className="text-gray-700 animate-pulse font-semibold">Dealing...</div>
-                    ) : (
-                        <CardDisplay cards={currentCards} />
-                    )}
-                 </div>
+                {/* Central Card Display Removed */}
+                {/* Loading indicator can be placed elsewhere if needed, or handled within PokerTable */}
+                {isLoading && (
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-700 animate-pulse font-semibold z-30">
+                        Dealing...
+                    </div>
+                )}
             </div>
 
 
@@ -178,7 +181,7 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
                 <div className={`mt-4 p-3 rounded-md text-center font-medium ${
                     feedback.startsWith('✅') ? 'bg-green-100 text-green-800 border border-green-300' :
                     feedback.startsWith('❌') ? 'bg-red-100 text-red-800 border border-red-300' :
-                    'bg-yellow-100 text-yellow-800 border border-yellow-300' // Style for info/warning
+                    'bg-yellow-100 text-yellow-800 border border-yellow-300'
                 }`}>
                     {feedback}
                 </div>
@@ -189,7 +192,6 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
                 <button
                     onClick={setupNewScenario}
                     className="px-5 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed"
-                    // Disable if loading OR if an action hasn't been made yet (unless there's feedback already shown from previous hand)
                     disabled={isLoading || (!isActionMade && feedback === null)}
                 >
                     {isLoading ? 'Loading...' : 'Next Hand'}
@@ -198,7 +200,7 @@ export default function TrainerInterface({ initialStack }: TrainerInterfaceProps
 
 
             {/* Range Display (Conditional) */}
-            {showRange && correctRange && ( // Only show if showRange is true AND correctRange is not null
+            {showRange && correctRange && (
                 <div className="mt-6 pt-4 border-t border-gray-300">
                     <h3 className="text-lg font-semibold mb-2 text-center text-gray-700">
                         Correct Range for {userPos} vs {openerPos} Open ({stackSize}bb):

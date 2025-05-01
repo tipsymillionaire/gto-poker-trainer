@@ -1,109 +1,144 @@
 import React from 'react';
-import { Position } from '@/lib/constants';
+import Image from 'next/image';
+// Assuming these constants and components are correctly defined/imported
+import { Position, POSITIONS_8MAX, OPEN_RAISE_SIZE_BB } from '@/lib/constants';
+import CardDisplay from './CardDisplay'; // Ensure CardDisplay uses colored backgrounds/white text
 
 interface PokerTableProps {
-  positions: readonly Position[]; // Expecting 8 positions in order UTG -> BB
+  positions: readonly Position[];
   openerPos: Position;
-  userPos: Position; // Hero's position
-  stackSize: number;
+  userPos: Position;
+  stackSize: number; // Using 40BB base stack for display logic below
+  heroCards: [string, string] | null;
+  isLoading: boolean;
 }
 
-// Define approximate positions around an oval table for 8 players (CLOCKWISE)
-// Percentages: [top, left] - null means auto/default
-// Using string percentages for Tailwind compatibility
-const seatPositionsClockwise: { [key in Position]?: { top?: string; bottom?: string; left?: string; right?: string; transform?: string } } = {
-    'BB': { top: '5%', left: '20%', transform: 'translateX(-50%)' },      // Top-left
-    'UTG+1': { top: '5%', right: '20%', transform: 'translateX(50%)' },   // Top-right
-    'LJ': { top: '50%', right: '0%', transform: 'translateY(-50%)' },      // Middle-right
-    'HJ': { bottom: '5%', right: '20%', transform: 'translateX(50%)' },   // Bottom-right
-    'CO': { bottom: '0%', left: '50%', transform: 'translateX(-50%)' },   // Bottom-center
-    'BU': { bottom: '5%', left: '20%', transform: 'translateX(-50%)' },    // Bottom-left
-    'SB': { top: '50%', left: '0%', transform: 'translateY(-50%)' },       // Middle-left
-    'UTG': { top: '0%', left: '50%', transform: 'translateX(-50%)' },      // Top-center
+// Seat Layout Coordinates (1-3-1-3)
+const seatCoordinates: { [key in Position]: { top: string; left: string } } = {
+  'UTG':   { top: '50%', left: '1%' },   // Left
+  'UTG+1': { top: '10%', left: '25%' },  // Top Left
+  'LJ':    { top: '10%',  left: '50%' },  // Top Center
+  'HJ':    { top: '10%', left: '75%' },  // Top Right
+  'CO':    { top: '50%', left: '99%' },  // Right
+  'BU':    { top: '80%', left: '75%' },  // Bottom Right
+  'SB':    { top: '80%', left: '50%' },  // Bottom Center
+  'BB':    { top: '80%', left: '25%' },  // Bottom Left
 };
 
-// Define positions for the D, SB, BB markers relative to the center/seats
-const markerPositions: { [key: string]: { top?: string; bottom?: string; left?: string; right?: string; transform?: string } } = {
-    'D': { bottom: '20%', left: '30%', transform: 'translate(-50%, 50%)' }, // Near BU seat
-    'SB': { top: '35%', left: '10%', transform: 'translate(-50%, -50%)' }, // Near SB seat
-    'BB': { top: '10%', left: '40%', transform: 'translate(-50%, -50%)' }, // Near BB seat
-};
+// Define positions for bet placement logic (beside seat box)
+const BET_POS_LEFT_OF_SEAT: Position[] = ['CO', 'BU', 'SB', 'BB'];
+const BET_POS_RIGHT_OF_SEAT: Position[] = ['UTG', 'UTG+1', 'LJ', 'HJ'];
 
+const PokerTable: React.FC<PokerTableProps> = ({
+  positions,
+  openerPos,
+  userPos,
+  stackSize, // Using 40BB base stack for display logic below
+  heroCards,
+  isLoading
+}) => {
+  // Dynamic scenario text calculation
+  const scenarioText = `${userPos} vs ${openerPos} RFI`;
 
-const PokerTable: React.FC<PokerTableProps> = ({ positions, openerPos, userPos, stackSize }) => {
+  // Base stack size
+  const baseStack = 40;
+
   return (
-    <div className="relative w-full max-w-2xl mx-auto aspect-[1.8/1] bg-green-700 border-8 border-gray-800 rounded-[50%] flex items-center justify-center text-white p-4 shadow-lg">
-      {/* Inner felt line */}
-      <div className="absolute inset-0 border-[15px] border-green-800 rounded-[50%] m-2 pointer-events-none"></div>
+    // Main Table Container
+    <div className={`relative w-full max-w-3xl mx-auto aspect-[2/1] bg-gray-800 border-[6px] border-teal-300 p-5 shadow-lg rounded-[150px]`}>
 
-      {/* Center Info */}
-      <div className="relative z-10 text-center pointer-events-none">
-        <h2 className="text-lg md:text-xl font-bold mb-1 md:mb-2">8-Max Table</h2>
-        <p className="text-sm md:text-base">Stack: {stackSize}bb</p>
+      {/* Inner Border Effect */}
+      <div className={`absolute inset-[18px] border border-teal-400/30 pointer-events-none rounded-[126px]`}></div>
+
+      {/* Center Information Display: Dynamic Scenario + Static Pot */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 text-center pointer-events-none">
+         <p className="text-sm md:text-base font-semibold text-gray-300 mb-1 whitespace-nowrap">{scenarioText}</p>
+         <p className="text-lg font-bold text-white">Pot : 4.6BB</p>
       </div>
 
-      {/* Player Seats */}
-      {positions.map(pos => {
-        const style = seatPositionsClockwise[pos] || {}; // Use clockwise positions
-        const isOpener = pos === openerPos;
+      {/* Static Small Blind / Big Blind Bet Indicators */}
+       <div className="absolute top-[62%] left-[30%] transform -translate-x-1/2 -translate-y-1/2 z-30" title="Big Blind Post"> {/* Positions from snippet */}
+           <div className="bg-gray-700 px-1.5 py-0.5 rounded text-white text-[10px] font-medium shadow">
+               1.0BB {/* Text from snippet */}
+           </div>
+       </div>
+        <div className="absolute top-[62%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 z-30" title="Small Blind Post"> {/* Positions from snippet */}
+           <div className="bg-gray-700 px-1.5 py-0.5 rounded text-white text-[10px] font-medium shadow">
+               0.5BB {/* Text from snippet */}
+           </div>
+       </div>
+       {/* --- / SB/BB Indicators --- */}
+
+      {/* Map through defined positions to render each seat */}
+      {POSITIONS_8MAX.map((pos) => {
         const isHero = pos === userPos;
+        const isOpener = pos === openerPos;
+        const isButton = pos === 'BU';
 
-        // Base styling for a seat
-        let seatClasses = `absolute w-16 h-10 md:w-20 md:h-12 rounded-lg border-2 flex flex-col items-center justify-center text-xs md:text-sm font-semibold shadow-md transition-all duration-200`;
+        const { top, left } = seatCoordinates[pos];
+        const seatStyle: React.CSSProperties = {
+          position: 'absolute',
+          top: top,
+          left: left,
+          transform: 'translate(-50%, -50%)',
+        };
 
-        // Highlight opener and hero
-        if (isOpener) {
-          seatClasses += ' bg-red-600 border-red-900 ring-2 ring-offset-2 ring-offset-green-700 ring-white z-10 scale-110';
-        } else if (isHero) {
-          seatClasses += ' bg-blue-600 border-blue-900 ring-2 ring-offset-2 ring-offset-green-700 ring-white z-10 scale-110';
-        } else {
-          seatClasses += ' bg-gray-600 border-gray-800';
+        // Calculate displayed stack size using OPEN_RAISE_SIZE_BB
+        let displayStack = isOpener
+          ? Math.max(0, baseStack - 2.3) // Use constant here
+          : baseStack;
+
+        // Base styling for the seat information box (relative position is key)
+        let seatClass = 'relative px-3 py-1.5 rounded bg-teal-900/80 text-white text-center shadow-md min-w-[100px] max-h-[35px]';
+        if (isHero) {
+            seatClass += ' ring-2 ring-blue-500'; // Hero highlight
         }
 
         return (
-          <div
-            key={pos}
-            className={seatClasses}
-            style={style} // Apply absolute positioning styles
-          >
-            {/* Position Name */}
-            <span className="block">{pos}</span>
+          // Set z-index for the seat container itself
+          <div key={pos} style={seatStyle} className="flex flex-col items-center z-20" aria-label={`Seat: ${pos}`}>
 
-            {/* Indicator for Opener/Hero */}
-            {isOpener && <span className="text-[9px] md:text-[10px] font-normal">(Opener)</span>}
-            {isHero && <span className="text-[9px] md:text-[10px] font-normal">(Hero)</span>}
-          </div>
+             {/* --- Player Cards (Hero and Opener ONLY) --- */}
+             <div className="flex justify-center h-12 items-end mb-1 min-h-[3rem]">
+                {!isLoading && (
+                    <>
+                        {isHero && heroCards && ( <div className="relative" title={`Hero Cards: ${heroCards.join(' ')}`}> <CardDisplay cards={heroCards} /> </div> )}
+                        {isOpener && !isHero && ( <div className="flex justify-center" title="Opener Cards (Hidden)"> <div className="w-8 h-10 bg-yellow-600 border border-black/50 rounded-sm shadow-sm -mr-4"></div> <div className="w-8 h-10 bg-yellow-600 border border-black/50 rounded-sm shadow-sm"></div> </div> )}
+                    </>
+                )}
+                {isLoading && <div className="h-10 text-xs text-gray-400">Loading...</div>}
+             </div>
+             {/* --- /Player Cards --- */}
+
+             {/* --- Seat Information Box (with Stack Size & Conditional Bet Indicator) --- */}
+             <div className={seatClass}>
+                {/* Dealer Button */}
+                {isButton && ( <div className="absolute -top-2 -right-5 w-5 h-5 bg-gray-200 rounded-full border-2 border-gray-400 flex items-center justify-center text-black text-xs font-bold shadow z-40" title="Dealer Button"> D </div> )}
+                {/* Position and Stack Info */}
+                <div className="flex items-center justify-center space-x-2">
+                   <span className="text-xs font-semibold">{pos}</span>
+                   <span className="text-[11px] text-gray-300">{displayStack.toFixed(1)} BB</span> {/* Ensure formatting */}
+                </div>
+                {/* --- Player Bet Amount (Positioned Conditionally Beside Seat Box) --- */}
+                {/* Bet indicator (Left Side) */}
+                {isOpener && !isLoading && BET_POS_LEFT_OF_SEAT.includes(pos) && (
+                    <div className="absolute top-1/2 left-[-5px] -translate-y-1/2 -translate-x-full z-30 whitespace-nowrap">
+                         <div className="bg-gray-700 px-1.5 py-0.5 rounded text-white text-[10px] font-medium shadow" title={`Opener Bet: ${OPEN_RAISE_SIZE_BB} BB`}> {OPEN_RAISE_SIZE_BB}BB </div> {/* Use formatted value */}
+                    </div>
+                )}
+                {/* Bet indicator (Right Side) */}
+                {isOpener && !isLoading && BET_POS_RIGHT_OF_SEAT.includes(pos) && (
+                     <div className="absolute top-1/2 right-[-5px] -translate-y-1/2 translate-x-full z-30 whitespace-nowrap">
+                          <div className="bg-gray-700 px-1.5 py-0.5 rounded text-white text-[10px] font-medium shadow" title={`Opener Bet: ${OPEN_RAISE_SIZE_BB} BB`}> {OPEN_RAISE_SIZE_BB}BB </div> {/* Use formatted value */}
+                     </div>
+                )}
+                {/* --- /Player Bet Amount --- */}
+             </div>
+             {/* --- /Seat Information Box --- */}
+          </div> // End Seat Container
         );
-      })}
-
-       {/* Dealer Button */}
-       <div
-         className="absolute w-6 h-6 md:w-8 md:h-8 bg-white rounded-full border-2 border-gray-400 flex items-center justify-center text-black text-sm md:text-base font-bold shadow-md z-20"
-         style={markerPositions['D']}
-         title="Dealer Button"
-       >
-         D
-       </div>
-
-       {/* Small Blind Button */}
-        <div
-         className="absolute w-6 h-6 md:w-8 md:h-8 bg-gray-300 rounded-full border-2 border-gray-500 flex items-center justify-center text-black text-xs md:text-sm font-bold shadow-md z-20"
-         style={markerPositions['SB']}
-         title="Small Blind"
-       >
-         SB
-       </div>
-
-       {/* Big Blind Button */}
-        <div
-         className="absolute w-6 h-6 md:w-8 md:h-8 bg-gray-900 text-white rounded-full border-2 border-black flex items-center justify-center text-xs md:text-sm font-bold shadow-md z-20"
-         style={markerPositions['BB']}
-         title="Big Blind"
-       >
-         BB
-       </div>
-
-    </div>
+      })} {/* End Map */}
+    </div> // End Table Container
   );
 };
 

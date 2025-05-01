@@ -15,16 +15,17 @@ interface SelectDropdownProps {
 
 const SelectDropdown: React.FC<SelectDropdownProps> = ({ label, value, onChange, options, id }) => {
   const selectId = id || label.toLowerCase().replace(/\s+/g, '-');
+
   return (
-    <div className="flex flex-col">
-      <label htmlFor={selectId} className="mb-1 text-sm font-medium text-gray-700">
+    <div className="flex items-center space-x-3">
+      <label htmlFor={selectId} className="text-sm font-medium whitespace-nowrap">
         {label}
       </label>
       <select
         id={selectId}
         value={value}
         onChange={onChange}
-        className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        className="px-3 py-2 bg-black text-teal-400 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
